@@ -21,7 +21,7 @@ public:
   bool empty() const;
 
   // Operations
-  Item* getAt(int index);
+  Item& getAt(int index);
   void insertAt(int index, Item value);
   void deleteAt(int index);
   void append(Item value);
@@ -64,11 +64,14 @@ bool Vector<Item>::empty() const { return size == 0; }
 
 /* Operations */
 template <typename Item>
-Item* Vector<Item>::getAt(int index) {
+Item& Vector<Item>::getAt(int index) {
   if (index < 0 || index >= capacity) {
     throw std::out_of_range("Index out of range");
   }
-  return array[index];
+  if (array[index] == nullptr) {
+    throw std::runtime_error("Accessing null element");
+  }
+  return *array[index];  // Desreferencia antes de retornar
 }
 
 template <typename Item>

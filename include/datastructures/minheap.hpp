@@ -2,18 +2,30 @@
 #define MINHEAP
 #include "vector.hpp"
 
-template <typename T>
+template <typename Item>
 class MinHeap {
 private:
-  Vector<T> vector;
+  Vector<Item> vector;
 
-  void heapify();
-  void getLowerChild();
-  void getHigherChild();
-  void getParent();
+  int parentIndex(int index);
+  int leftChildIndex(int index);
+  int rightChildIndex(int index);
+  void heapifyUp(int index);
+  void heapifyDown(int index);
+
 public:
-  void insert();
-  void remove();
+  // Constructors and Destructors
+  MinHeap();
+  ~MinHeap();
+
+  // Attributes
+  int getSize() const;
+  bool empty() const;
+
+  // Operations
+  void insert(Item value);
+  void extractMin();
+  Item getMin() const;
 };
 
 #endif
