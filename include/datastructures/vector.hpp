@@ -13,6 +13,7 @@ private:
 public:
   // Constructors and Destructors
   Vector();
+  Vector(int capacity);
   ~Vector();
 
   // Attributes
@@ -21,16 +22,21 @@ public:
   bool empty() const;
 
   // Operations
-  Item& getAt(int index);
+  Item& getAt(int index) const;
   void insertAt(int index, Item value);
   void deleteAt(int index);
   void append(Item value);
+  void swap(int a, int b);
 };
 
 /* Constructors and Destructors */
 template <typename Item>
 Vector<Item>::Vector() : array(new Item*[1]), size(0), capacity(1) {
   array[0] = nullptr;
+}
+template <typename Item>
+Vector<Item>::Vector(int capacity) : array(new Item*[capacity]), size(0), capacity(capacity) {
+  for (int i = 0; i < capacity; i++) array[i] = nullptr;
 }
 
 template <typename Item>
@@ -64,14 +70,11 @@ bool Vector<Item>::empty() const { return size == 0; }
 
 /* Operations */
 template <typename Item>
-Item& Vector<Item>::getAt(int index) {
-  if (index < 0 || index >= capacity) {
+Item& Vector<Item>::getAt(int index) const {
+  if (index < 0 || index >= size) {
     throw std::out_of_range("Index out of range");
   }
-  if (array[index] == nullptr) {
-    throw std::runtime_error("Accessing null element");
-  }
-  return *array[index];  // Desreferencia antes de retornar
+  return *array[index];
 }
 
 template <typename Item>
@@ -80,24 +83,38 @@ void Vector<Item>::insertAt(int index, Item value) {
     doubleArray();
   }
   if (array[index] == nullptr) size++;
+  delete array[index];
   array[index] = new Item(value);
 }
 
 template <typename Item>
 void Vector<Item>::deleteAt(int index) {
+  if (this->empty()){
+    throw std::out_of_range("Array is empty");
+  }
+
   if (index < 0 || index >= capacity) {
     throw std::out_of_range("Index out of range");
   }
+
   if (array[index] != nullptr) {
     delete array[index];
     array[index] = nullptr;
-    size--;
+    if (index == size - 1)
+      size--;
   }
 }
 
 template <typename Item>
 void Vector<Item>::append(Item value) {
   insertAt(size, value);
+}
+
+template <typename Item>
+void Vector<Item>::swap(int i, int j){
+  Item* temp = array[i];
+  array[i] = array[j];
+  array[j] = temp;
 }
 
 #endif
