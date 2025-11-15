@@ -16,8 +16,11 @@ class Segment {
     int type;
 
   public:
-    Segment();
-    ~Segment();
+    // Constructors and Destructors
+    Segment(Stop* origin, Stop* destination, int type);
+
+    // Operations
+    double getDistance();
 };
 
 

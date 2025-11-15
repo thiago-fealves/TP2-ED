@@ -14,8 +14,12 @@ class Stop {
     int type;
     Demand* demand;
   public:
+    // Constructors and Destructors
     Stop();
     ~Stop();
+
+    // Getters
+    Vector2D getPosition();
 }; 
 
 #endif

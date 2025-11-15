@@ -2,6 +2,7 @@
 #define RIDE
 #include "datastructures/vector.hpp"
 #include "segment.hpp"
+#include "utils.hpp"
 
 class Demand; // Forward Declaration to solve circular imports
 
@@ -17,7 +18,7 @@ class Ride {
     double efficiency;
 
   public:
-    Ride();
+    Ride(Vector<Segment*> segments, Vector<Demand*> demands);
     ~Ride();
 };
 
