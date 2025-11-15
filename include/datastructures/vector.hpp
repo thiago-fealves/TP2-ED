@@ -35,6 +35,7 @@ template <typename Item>
 Vector<Item>::Vector() : array(new Item*[1]), size(0), capacity(1) {
   array[0] = nullptr;
 }
+
 template <typename Item>
 Vector<Item>::Vector(int capacity) : array(new Item*[capacity]), size(0), capacity(capacity) {
   for (int i = 0; i < capacity; i++) array[i] = nullptr;

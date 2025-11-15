@@ -68,7 +68,7 @@ void Simulation::printOutput(double currentTimestamp, Ride* currentRide, Vector<
 Vector<Demand*> Simulation::getDemands() {
   // Parameters and initialization
   SimulationParameters::getSimulationParameters();
-  Vector<Demand*> allDemands;
+  Vector<Demand*> allDemands(500);
   
   // Reading demands
   int numDemands;

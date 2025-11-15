@@ -6,7 +6,7 @@ CXXFLAGS = -std=c++11 -Wall -Wextra -Iinclude -g
 SRC= src
 OBJ = obj
 BIN = bin
-TARGET = $(BIN)/tp.out 
+TARGET = $(BIN)/tp2.out 
 
 # Files
 SRC_FILES = $(wildcard $(SRC)/*.cpp)
