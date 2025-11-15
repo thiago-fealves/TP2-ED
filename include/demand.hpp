@@ -24,8 +24,8 @@ class Demand {
     // Statistics
     // TO-DO: Adicionar estatísticas
   public:
-  Demand(int id, double timestamp, Vector2D origin, Vector2D destination, Ride* ride, int state);
-  ~Demand();  
+    Demand(int id, double timestamp, Vector2D origin,
+        Vector2D destination, Ride* ride, int state);
 };
 
 

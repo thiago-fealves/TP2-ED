@@ -14,12 +14,13 @@ class Stop {
     int type;
     Demand* demand;
   public:
-    // Constructors and Destructors
-    Stop();
-    ~Stop();
+    // Constructor 
+    Stop(Vector2D position, int type, Demand* demand);
 
     // Getters
     Vector2D getPosition();
+    int getType();
+    Demand* getDemand();
 }; 
 
 #endif

@@ -19,8 +19,9 @@ class Segment {
     // Constructors and Destructors
     Segment(Stop* origin, Stop* destination, int type);
 
-    // Operations
-    double getDistance();
+    // Getters
+    double getDistance() const;
+    double getDuration() const;
 };
 
 

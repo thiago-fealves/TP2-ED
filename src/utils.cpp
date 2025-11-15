@@ -4,11 +4,11 @@
 
 // Parameters
 void SimulationParameters::getSimulationParameters(){
-  std::cin >> capacidade >> velocidade >> intervalo >> distanciaOrigem >> distanciaDestino >> eficiencia;
+  std::cin >> capacity >> velocity >> interval >> distanceOrigin >> distanceDestination >> eficiency;
 }
 void SimulationParameters::printParameters(){
-  std::cout << capacidade << " " << velocidade << " " << intervalo; 
-  std::cout << " " << distanciaOrigem << " " << distanciaDestino << " " << eficiencia << std::endl; 
+  std::cout << capacity << " " << velocity << " " << interval; 
+  std::cout << " " << distanceOrigin << " " << distanceDestination << " " << eficiency << std::endl; 
 }
 
 // Vector2D

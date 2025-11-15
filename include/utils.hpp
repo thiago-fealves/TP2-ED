@@ -5,16 +5,16 @@ class SimulationParameters {
   // Data must be public so other functions can access directly, there is no sensible information here
   public:
     // Attributes eta, gama, delta, alfa, beta and lambda, respectively
-    int capacidade;
-    double velocidade;
-    double intervalo;
-    double distanciaOrigem;
-    double distanciaDestino;
-    double eficiencia;
+    static int capacity;
+    static double velocity;
+    static double interval;
+    static double distanceOrigin;
+    static double distanceDestination;
+    static double eficiency;
     
     // Initialization
-    void getSimulationParameters();
-    void printParameters();
+    static void getSimulationParameters();
+    static void printParameters();
 };
 
 class Vector2D {

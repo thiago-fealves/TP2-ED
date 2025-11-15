@@ -11,6 +11,7 @@ class Ride {
     // Attributes
     Vector<Segment*> segments; 
     Vector<Demand*> demands;
+    Vector<Stop*> stops;
 
     // Statistics
     double duration;
@@ -18,7 +19,7 @@ class Ride {
     double efficiency;
 
   public:
-    Ride(Vector<Segment*> segments, Vector<Demand*> demands);
+    Ride(Vector<Demand*> demands);
     ~Ride();
 };
 
