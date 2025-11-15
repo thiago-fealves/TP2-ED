@@ -1,0 +1,754 @@
+#ifndef DEMAND
+#define DEMAND
+#include "utils.hpp"
+#include "ride.hpp"
+
+// Enum on states for readability
+constexpr int PENDING = 0;
+constexpr int SINGLE = 1;
+constexpr int COMBINED = 2;
+constexpr int FINISHED = 3;
+
+class Ride; // Forward Declaration to solve circular import
+
+class Demand {
+  private:
+    // Attributes
+    int id;
+    double timestamp;
+    Vector2D origin;
+    Vector2D destination;
+    Ride* ride;
+    int state;
+
+    // Statistics
+    // TO-DO: Adicionar estatísticas
+  public:
+    
+    // Constructor
+    Demand(int id, double timestamp, Vector2D origin,
+        Vector2D destination, Ride* ride, int state);
+    
+    // Getters and Setters
+    int getID() const;
+    double getTimestamp() const;
+    Vector2D getOrigin() const;
+    Vector2D getDestination() const;
+    Ride* getRide() const;
+    int getState() const;
+    void setRide(Ride* ride);
+    void setState(int state);
+};
+
+
+#endif
+#ifndef EVENT
+#define EVENT
+#include "demand.hpp"
+#include "ride.hpp"
+#include "stop.hpp"
+
+// Enum for readability
+constexpr int EVENT_PICKUP = 0;
+constexpr int EVENT_DROPOFF = 1;
+
+class Event{
+  private:
+    double timestamp;
+    int type;
+    Ride* ride;
+    Stop* stop;
+  public:
+    Event(double timestamp, int type, Ride* ride, Stop* stop);
+    bool operator>(const Event& other) const;
+    double getTimestamp() const;
+    int getType() const;
+    Ride* getRide();
+    Stop* getStop();
+};
+
+#endif
+#ifndef RIDE
+#define RIDE
+#include "datastructures/vector.hpp"
+#include "segment.hpp"
+#include "utils.hpp"
+
+class Demand; // Forward Declaration to solve circular imports
+
+class Ride {
+  private:
+    // Attributes
+    Vector<Segment*> segments; 
+    Vector<Demand*> demands;
+    Vector<Stop*> stops;
+
+    // Statistics
+    double duration;
+    double distance;
+    double efficiency;
+
+  public:
+    Ride(Vector<Demand*> demands);
+    ~Ride();
+
+    // Getters
+    Vector<Stop*>& getStops(); 
+    Vector<Segment*>& getSegments();
+    Vector<Demand*>& getDemands();
+    double getDistance() const;
+};
+
+#endif
+#ifndef SCHEDULER
+#define SCHEDULER
+#include "datastructures/minheap.hpp"
+#include "event.hpp"
+
+class Scheduler {
+  private:
+    MinHeap<Event> simulation;
+  public:
+    void initialize();
+    void appendEvent(Event newEvent);
+    Event popNextEvent();
+    void end();
+    bool isEmpty() const;
+};
+
+#endif
+#ifndef SEGMENT
+#define SEGMENT
+#include "stop.hpp"
+// Enum on states for readability
+constexpr int PICKUP = 0;
+constexpr int DROPOFF = 1;
+constexpr int MOVEMENT = 2;
+
+class Segment {
+  private:
+    // Attributes
+    Stop* origin;
+    Stop* destination;
+    double duration;
+    double distance;
+    int type;
+
+  public:
+    // Constructors and Destructors
+    Segment(Stop* origin, Stop* destination, int type);
+
+    // Getters
+    double getDistance() const;
+    double getDuration() const;
+};
+
+
+#endif
+#ifndef SIMULATION
+#define SIMULATION
+#include <iostream>
+#include "utils.hpp"
+#include "demand.hpp"
+#include "ride.hpp"
+#include "scheduler.hpp" 
+
+class Simulation {
+  public:
+    static double calculateEfficiency(Vector<Demand*>& demands); 
+    static void printOutput(double currentTimestamp, Ride* currentRide, Vector<Stop*> rideStops);
+    static Vector<Demand*> getDemands();
+    static Scheduler rideGeneration(Vector<Demand*>& allDemands, Vector<Ride*>& allRides);
+    static void processEvents(Scheduler& scheduler);
+    static void clearMemory(Vector<Demand*>& allDemands, Vector<Ride*>& allRides, Scheduler& scheduler);
+};
+
+
+#endif
+#ifndef STOP
+#define STOP
+#include "utils.hpp"
+
+class Demand; // Forward Declaration to solve circular import
+
+// Enum for readability
+constexpr int STOP_PICKUP = 0;
+constexpr int STOP_DROPOFF = 1;
+
+class Stop {
+  private:
+    Vector2D position;
+    int type;
+    Demand* demand;
+  public:
+    // Constructor 
+    Stop(Vector2D position, int type, Demand* demand);
+
+    // Getters
+    Vector2D getPosition();
+    int getType();
+    Demand* getDemand();
+}; 
+
+#endif
+#ifndef UTILS
+#define UTILS
+
+class SimulationParameters {
+  // Data must be public so other functions can access directly, there is no sensible information here
+  public:
+    // Attributes eta, gama, delta, alfa, beta and lambda, respectively
+    static int capacity;
+    static double velocity;
+    static double interval;
+    static double maxDistanceOrigin;
+    static double maxDistanceDestination;
+    static double efficiency;
+    
+    // Initialization
+    static void getSimulationParameters();
+    static void printParameters();
+};
+
+class Vector2D {
+  public:
+    // Attributes
+    double x;
+    double y;
+
+    // Constructors
+    Vector2D();
+    Vector2D(double x, double y);
+
+    // Operations
+    Vector2D operator+(const Vector2D& other) const;
+    Vector2D operator-(const Vector2D& other) const;
+    Vector2D operator*(const int scalar) const;
+
+    static double distance(Vector2D one, Vector2D two);
+};
+
+
+
+#endif
+#include "demand.hpp"
+
+// Constructor
+Demand::Demand(int id, double timestamp, Vector2D origin,
+  Vector2D destination, Ride* ride, int state) : id(id),
+  timestamp(timestamp), origin(origin), 
+  destination(destination), ride(ride), state(state) {};
+
+// Getters and setters
+int Demand::getID() const {
+  return this->id;
+}
+
+double Demand::getTimestamp() const {
+  return this->timestamp;
+}
+
+Vector2D Demand::getOrigin() const {
+  return this->origin;
+}
+
+Vector2D Demand::getDestination() const {
+  return this->destination;
+}
+
+Ride* Demand::getRide() const {
+  return this->ride;
+}
+
+int Demand::getState() const {
+  return this->state;
+}
+
+void Demand::setRide(Ride* ride) {
+    this->ride = ride;
+}
+
+void Demand::setState(int state) {
+    this->state = state;
+}
+#include "event.hpp"
+
+Event::Event(double timestamp, int type, Ride* ride, Stop* stop) : 
+  timestamp(timestamp), type(type), ride(ride), stop(stop) {}
+
+ 
+bool Event::operator>(const Event& other) const {
+  return this->timestamp > other.timestamp;
+}
+
+double Event::getTimestamp() const { 
+  return this->timestamp;
+}
+
+int Event::getType() const {
+  return this->type;
+}
+
+Ride* Event::getRide() {
+  return this->ride;
+}
+
+Stop* Event::getStop() {
+  return this->stop;
+}
+
+
+
+
+#include "ride.hpp"
+#include "simulation.hpp"
+int main() {
+  Vector<Demand*> allDemands = Simulation::getDemands();
+  Vector<Ride*> allRides;
+  Scheduler scheduler = Simulation::RideGeneration(allDemands, allRides);  
+  Simulation::processEvents(scheduler); 
+  Simulation::clearMemory(allDemands, allRides, scheduler);
+}
+
+#include "ride.hpp"
+#include "demand.hpp"
+#include "stop.hpp"
+#include "segment.hpp"
+
+// Constructor and Destructor
+Ride::Ride(Vector<Demand*> demands) : demands(demands),duration(0.0),
+  distance(0.0),efficiency(0.0) {
+
+  int numDemands = demands.getSize();
+  if (numDemands == 0) return;
+
+  // Pickup
+  for (int i = 0; i < numDemands; i++) {
+      Demand* demand = demands.getAt(i);
+      this->stops.append(new Stop(demand->getOrigin(), STOP_PICKUP, demand));
+  }
+
+  // Drop Off
+  for (int i = 0; i < numDemands; i++) {
+    Demand* demand = demands.getAt(i);
+    this->stops.append(new Stop(demand->getDestination(), STOP_DROPOFF, demand));
+  }
+
+ // Creating segments
+  int numStops = this->stops.getSize();
+  for (int i = 0; i < numStops - 1; i++) {
+    Stop* stopOrigem = this->stops.getAt(i);
+    Stop* stopDestino = this->stops.getAt(i + 1);
+    int segmentType;
+    
+    // Segment between two Pick Up Stops is a PICKUP type
+    if (i < numDemands - 1) {
+      segmentType = PICKUP; 
+    }
+
+    // Segment between one Pick Up Stop and one Drop off Stop is a MOVEMENT type
+    else if (i == numDemands - 1) {
+      segmentType = MOVEMENT; 
+    }
+
+    // Segment between two dropoffs is a DROPOFF type
+    else {
+      segmentType = DROPOFF;
+    }
+
+    // Initialization and statististics
+    Segment* newSegment = new Segment(stopOrigem, stopDestino, segmentType);
+    this->segments.append(newSegment);
+    this->distance += newSegment->getDistance();
+    this->duration += newSegment->getDuration();
+  }
+}
+
+Ride::~Ride(){
+  for (int i = 0; i < segments.getSize(); i++) {
+    delete segments.getAt(i);
+  }
+
+  for (int i = 0; i < stops.getSize(); i++) {
+    delete stops.getAt(i);
+  }
+}
+
+// Getters
+Vector<Stop*>& Ride::getStops() {
+    return this->stops;
+}
+
+Vector<Segment*>& Ride::getSegments() {
+    return this->segments;
+}
+
+Vector<Demand*>& Ride::getDemands() {
+    return this->demands;
+}
+
+double Ride::getDistance() const {
+  return this->distance;
+} 
+
+#include "scheduler.hpp"
+#include "event.hpp"
+
+void Scheduler::appendEvent(Event event) {
+  simulation.insert(event);
+}
+
+void Scheduler::initialize() {
+  // Not really needed, constructor dealt with the job
+}
+
+Event Scheduler::popNextEvent() {
+  return simulation.extractMin();
+}
+
+bool Scheduler::isEmpty() const{
+  return simulation.empty();
+}
+
+void Scheduler::end(){
+  // TODO: Statistics here
+}
+#include "segment.hpp"
+#include "utils.hpp"
+
+Segment::Segment(Stop* origin, Stop* destination, int type) :
+  origin(origin), destination(destination), type(type) {
+    this->distance = Vector2D::distance(destination->getPosition(), origin->getPosition());
+  if (SimulationParameters::velocity > 0) {
+    this->duration = this->distance / SimulationParameters::velocity;
+  }
+  else {
+    this->duration = 0.0;
+  }
+}
+
+double Segment::getDistance() const {
+  return this->distance;
+} 
+
+double Segment::getDuration() const {
+  return this->duration;
+}
+#include "simulation.hpp"
+#include "ride.hpp"
+
+double Simulation::calculateEfficiency(Vector<Demand*>& demands) {
+    int numDemands = demands.getSize();
+
+    // Individual ride
+    if (numDemands <= 1) {
+        return 1.0;
+    }
+    
+    // Get stops
+    Vector<Vector2D> stops;
+    for (int i = 0; i < numDemands; i++) {
+        stops.append(demands.getAt(i)->getOrigin());
+    }
+
+    for (int i = 0; i < numDemands; i++) {
+        stops.append(demands.getAt(i)->getDestination());
+    }
+
+    double totalDistance = 0.0;
+    double movementDistance = 0.0;
+    
+    // Calculates distances
+    for (int i = 0; i < stops.getSize() - 1; i++) {
+        Vector2D stop1 = stops.getAt(i);
+        Vector2D stop2 = stops.getAt(i + 1);
+        double segmentDistance = Vector2D::distance(stop1, stop2);
+
+        totalDistance += segmentDistance;
+
+        if (i == numDemands - 1) {
+            movementDistance = segmentDistance;
+        }
+    }
+    
+    // Returns efficiency
+    if (totalDistance == 0.0) {
+        return 0.0;
+    }
+
+    return movementDistance / totalDistance;
+}
+
+void Simulation::printOutput(double currentTimestamp, Ride* currentRide, Vector<Stop*> rideStops) {
+  // Conclusion time
+  std::cout << currentTimestamp << " ";
+
+  // Total Distance
+  std::cout << currentRide->getDistance() << " ";
+
+  // Number of rides
+  std::cout << rideStops.getSize() << " ";
+
+  // Coordinates Sequence
+  for (int i = 0; i < rideStops.getSize(); i++) {
+    Vector2D position = rideStops.getAt(i)->getPosition();
+    std::cout << position.x << " " << position.y;
+    if (i < rideStops.getSize() - 1) {
+      std::cout << " "; 
+    }
+  }
+  std::cout << std::endl;
+}
+
+
+Vector<Demand*> Simulation::getDemands() {
+  // Parameters and initialization
+  SimulationParameters::getSimulationParameters();
+  Vector<Demand*> allDemands;
+  
+  // Reading demands
+  int numDemands;
+  std::cin >> numDemands;
+
+  for (int i = 0; i < numDemands; i++) {
+    int id;
+    double time;
+    double origin_x, origin_y, destination_x, destination_y; 
+    std::cin >> id >> time >> origin_x >> origin_y >> destination_x >> destination_y;
+
+    // Creates new pending demand and saves it
+    Demand* demand = new Demand(id, time,
+        Vector2D(origin_x, origin_y), Vector2D(destination_x, destination_y),
+        nullptr, PENDING);
+        
+    allDemands.append(demand);
+  }
+
+  return allDemands;
+}
+
+Scheduler Simulation::rideGeneration(Vector<Demand*>& allDemands, Vector<Ride*>& allRides) {
+  Scheduler scheduler;
+  // Processes Demands one by one
+  for (int i = 0; i < allDemands.getSize(); i++) {
+    Demand* currentDemand = allDemands.getAt(i);
+    if (currentDemand->getState() != PENDING) {
+        continue;
+    }
+    
+    // Initialize with individual ride
+    Vector<Demand*> rideDemands;
+    rideDemands.append(currentDemand);
+
+    // Searches compatible rides
+    for (int j = i + 1; j < allDemands.getSize(); j++) {
+        Demand* candidateDemand = allDemands.getAt(j);
+
+        // Is it pending?
+        if (candidateDemand->getState() != PENDING) continue;
+
+        // Is there any seats available at the vehicle?
+        if (rideDemands.getSize() >= SimulationParameters::capacity) break;
+        
+        // Is it within the timestamp threshold?
+        if (candidateDemand->getTimestamp() - currentDemand->getTimestamp() >= SimulationParameters::interval) {
+          continue;
+        }
+        
+        // Origin and Destination distance criterion
+        bool distanceOk = true;
+        for (int k = 0; k < rideDemands.getSize(); k++) {
+          Demand* demandInRide = rideDemands.getAt(k);
+
+          // Is the origin close to all other demands in the ride?
+          if (Vector2D::distance(candidateDemand->getOrigin(), 
+            demandInRide->getOrigin()) > SimulationParameters::maxDistanceOrigin) {
+              distanceOk = false;
+              break;
+          }
+
+          // Is the destination close to all other demands in the ride?
+          if (Vector2D::distance(candidateDemand->getDestination(),
+            demandInRide->getDestination()) > SimulationParameters::maxDistanceDestination) {
+              distanceOk = false;
+              break;
+          }
+        }
+        
+        // Is the distance criterion ok?
+        if (!distanceOk) {
+          break;
+        }
+
+        // Temporarily add candidate to check efficiency
+        rideDemands.append(candidateDemand);
+        double efficiency = calculateEfficiency(rideDemands);
+        
+        // Is the ride with the candidate within the efficiency threshold?
+        if (efficiency <= SimulationParameters::efficiency) {
+            // Removes candidate
+            rideDemands.removeLast();
+            break;
+        }
+
+        // If the demand passes all the criterion, the candidate is already added
+      }
+
+    // Creates the new ride
+    Ride* newRide = new Ride(rideDemands);
+    allRides.append(newRide);
+    
+    // Updates pointers on all demands
+    int numGroups = rideDemands.getSize();
+    int updatedState = (numGroups > 1) ? COMBINED : SINGLE;
+
+    for (int k = 0; k < numGroups; k++) {
+        Demand* demand = rideDemands.getAt(k);
+        demand->setRide(newRide);
+        demand->setState(updatedState);
+    }
+
+    // Creates and returns event
+    Stop* firstStop = newRide->getStops().getAt(0);
+    double initialTimestamp = currentDemand->getTimestamp();
+    Event initialEvent(initialTimestamp, EVENT_PICKUP, newRide, firstStop);
+    scheduler.appendEvent(initialEvent);
+  }
+  return scheduler;
+}
+
+void Simulation::processEvents(Scheduler& scheduler) {
+  while (!scheduler.isEmpty()) {
+    // Processes one event at a time to generate the next ones
+    Event currentEvent = scheduler.popNextEvent();
+    
+    // Event data
+    double currentTimestamp = currentEvent.getTimestamp();
+    Ride* currentRide = currentEvent.getRide();
+    Stop* currentStop = currentEvent.getStop();
+    
+    // Get next stop
+    int nextStopIndex = -1;
+    Vector<Stop*>& rideStops = currentRide->getStops();
+    for (int i = 0; i < rideStops.getSize() - 1; i++) {
+      if (rideStops.getAt(i) == currentStop) {
+        nextStopIndex = i + 1; // Encontramos, a próxima é i+1
+        break;
+      }
+    }
+    
+    /* Schedule next event */
+
+    // If the is still stops in current rides
+    if (nextStopIndex != -1) {
+      Stop* nextStop = rideStops.getAt(nextStopIndex);  
+
+      // Get the segment between current stop and next stop
+      Segment* segment = currentRide->getSegments().getAt(nextStopIndex - 1);
+            
+      // Next event timestamp
+      double segmentDuration = segment->getDuration();
+      double nextEventTimestamp = currentTimestamp + segmentDuration;
+
+      // Next event time
+      int nextEventType;
+      if (nextStop->getType() == STOP_PICKUP) {
+        nextEventType = EVENT_PICKUP;
+      }
+      else {
+        nextEventType = EVENT_DROPOFF;
+      }
+
+      // Cria e agenda o próximo evento
+      Event nextEvent(nextEventTimestamp, nextEventType, currentRide, nextStop);
+      scheduler.appendEvent(nextEvent);
+    } 
+    
+    // If this is the last stop of the current ride
+    else { 
+      // Finish all rides
+      Vector<Demand*>& rideDemands = currentRide->getDemands();
+      for (int i = 0; i < rideDemands.getSize(); i++) {
+        rideDemands.getAt(i)->setState(FINISHED);
+      }
+      
+      printOutput(currentTimestamp, currentRide, rideStops);
+
+    }
+  }
+}
+
+
+
+void Simulation::clearMemory(Vector<Demand*>& allDemands, Vector<Ride*>& allRides, Scheduler& scheduler) {
+  for (int i = 0; i < allRides.getSize(); i++) {
+        delete allRides.getAt(i);
+    }
+
+    for (int i = 0; i < allDemands.getSize(); i++) {
+        delete allDemands.getAt(i);
+    }
+    
+    scheduler.end();
+}
+#include "stop.hpp"
+
+Stop::Stop(Vector2D position, int type, Demand* demand) : position(position), 
+  type(type), demand(demand) {}
+
+Vector2D Stop::getPosition(){
+  return this->position;
+}
+
+int Stop::getType() {
+  return this->type;
+}
+
+Demand* Stop::getDemand() {
+  return this->demand;
+}
+#include "utils.hpp"
+#include <iostream>
+#include <cmath>
+
+// Initializing parameters
+int SimulationParameters::capacity = 0;
+double SimulationParameters::velocity = 0.0;
+double SimulationParameters::interval = 0.0;
+double SimulationParameters::maxDistanceOrigin = 0.0;
+double SimulationParameters::maxDistanceDestination = 0.0;
+double SimulationParameters::efficiency = 0.0;
+
+// Parameters Input
+void SimulationParameters::getSimulationParameters(){
+  std::cin >> capacity >> velocity >> interval >> maxDistanceOrigin >> maxDistanceDestination >> efficiency;
+}
+void SimulationParameters::printParameters(){
+  std::cout << capacity << " " << velocity << " " << interval; 
+  std::cout << " " << maxDistanceOrigin << " " << maxDistanceDestination << " " << efficiency << std::endl; 
+}
+
+// Vector2D
+Vector2D::Vector2D() : x(0), y(0) {}
+
+Vector2D::Vector2D(double x, double y) : x(x), y(y) {}
+
+Vector2D Vector2D::operator+(const Vector2D& other) const {
+  return Vector2D(this->x + other.x, this->y + other.y);
+}
+
+Vector2D Vector2D::operator-(const Vector2D& other) const {
+  return Vector2D(this->x - other.x, this->y - other.y);
+}
+
+Vector2D Vector2D::operator*(const int scalar) const {
+  return Vector2D(this->x * scalar, this->y * scalar);
+}
+
+
+double Vector2D::distance(Vector2D one, Vector2D two){
+  double distance_x = one.x - two.x;
+  double distance_y = one.y - two.y;
+  return std::sqrt(pow(distance_x, 2) + pow(distance_y, 2));
+}
+

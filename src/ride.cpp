@@ -3,6 +3,7 @@
 #include "stop.hpp"
 #include "segment.hpp"
 
+// Constructor and Destructor
 Ride::Ride(Vector<Demand*> demands) : demands(demands),duration(0.0),
   distance(0.0),efficiency(0.0) {
 
@@ -21,7 +22,7 @@ Ride::Ride(Vector<Demand*> demands) : demands(demands),duration(0.0),
     this->stops.append(new Stop(demand->getDestination(), STOP_DROPOFF, demand));
   }
 
-  // Creating segments
+ // Creating segments
   int numStops = this->stops.getSize();
   for (int i = 0; i < numStops - 1; i++) {
     Stop* stopOrigem = this->stops.getAt(i);
@@ -60,4 +61,21 @@ Ride::~Ride(){
     delete stops.getAt(i);
   }
 }
+
+// Getters
+Vector<Stop*>& Ride::getStops() {
+    return this->stops;
+}
+
+Vector<Segment*>& Ride::getSegments() {
+    return this->segments;
+}
+
+Vector<Demand*>& Ride::getDemands() {
+    return this->demands;
+}
+
+double Ride::getDistance() const {
+  return this->distance;
+} 
 

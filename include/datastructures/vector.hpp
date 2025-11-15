@@ -27,6 +27,7 @@ public:
   void deleteAt(int index);
   void append(Item value);
   void swap(int a, int b);
+  void removeLast();
 };
 
 /* Constructors and Destructors */
@@ -115,6 +116,16 @@ void Vector<Item>::swap(int i, int j){
   Item* temp = array[i];
   array[i] = array[j];
   array[j] = temp;
+}
+
+template <typename Item>
+void Vector<Item>::removeLast() {
+  if (this->empty()) {
+    throw std::out_of_range("Array is empty");
+  }
+  int lastIndex = size - 1;
+  array[lastIndex] = nullptr;
+  size--;
 }
 
 #endif

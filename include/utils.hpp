@@ -10,7 +10,7 @@ class SimulationParameters {
     static double interval;
     static double maxDistanceOrigin;
     static double maxDistanceDestination;
-    static double eficiency;
+    static double efficiency;
     
     // Initialization
     static void getSimulationParameters();
@@ -31,6 +31,10 @@ class Vector2D {
     Vector2D operator+(const Vector2D& other) const;
     Vector2D operator-(const Vector2D& other) const;
     Vector2D operator*(const int scalar) const;
+
+    static double distance(Vector2D one, Vector2D two);
 };
+
+
 
 #endif

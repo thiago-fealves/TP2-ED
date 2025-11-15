@@ -19,6 +19,8 @@ class Event{
     bool operator>(const Event& other) const;
     double getTimestamp() const;
     int getType() const;
+    Ride* getRide();
+    Stop* getStop();
 };
 
 #endif

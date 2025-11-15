@@ -21,6 +21,12 @@ class Ride {
   public:
     Ride(Vector<Demand*> demands);
     ~Ride();
+
+    // Getters
+    Vector<Stop*>& getStops(); 
+    Vector<Segment*>& getSegments();
+    Vector<Demand*>& getDemands();
+    double getDistance() const;
 };
 
 #endif

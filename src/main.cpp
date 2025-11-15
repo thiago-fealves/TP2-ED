@@ -1,7 +1,10 @@
-#include <utils.hpp>
-
+#include "ride.hpp"
+#include "simulation.hpp"
 int main() {
-  SimulationParameters::getSimulationParameters();
-  SimulationParameters::printParameters();
-  return 0;
+  Vector<Demand*> allDemands = Simulation::getDemands();
+  Vector<Ride*> allRides;
+  Scheduler scheduler = Simulation::RideGeneration(allDemands, allRides);  
+  Simulation::processEvents(scheduler); 
+  Simulation::clearMemory(allDemands, allRides, scheduler);
 }
+
