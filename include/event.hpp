@@ -16,7 +16,7 @@ class Event{
     Stop* stop;
   public:
     Event(double timestamp, int type, Ride* ride, Stop* stop);
-    bool operator>(const Event& other) const;
+    bool operator<(const Event& other) const;
     double getTimestamp() const;
     int getType() const;
     Ride* getRide();
