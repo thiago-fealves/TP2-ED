@@ -1,5 +1,6 @@
 #include "simulation.hpp"
 #include "ride.hpp"
+#include <iomanip>
 
 double Simulation::calculateEfficiency(Vector<Demand*>& demands) {
     int numDemands = demands.getSize();
@@ -44,14 +45,23 @@ double Simulation::calculateEfficiency(Vector<Demand*>& demands) {
 }
 
 void Simulation::printOutput(double currentTimestamp, Ride* currentRide, Vector<Stop*> rideStops) {
+  // Set Precision to doubles
+  std::cout << std::fixed << std::setprecision(2)
+
   // Conclusion time
   std::cout << currentTimestamp << " ";
 
   // Total Distance
   std::cout << currentRide->getDistance() << " ";
 
+  // Back to integers
+  std::cout.unsetf(std::ios_base::floatfield);
+
   // Number of rides
   std::cout << rideStops.getSize() << " ";
+  
+  // And setting precision again
+  std::cout << std::fixed << std::setprecision(2);
 
   // Coordinates Sequence
   for (int i = 0; i < rideStops.getSize(); i++) {
@@ -62,6 +72,10 @@ void Simulation::printOutput(double currentTimestamp, Ride* currentRide, Vector<
     }
   }
   std::cout << std::endl;
+  
+  // And back to default
+  std::cout.unsetf(std::ios_base::floatfield);
+  std::cout << std::defaultfloat;
 }
 
 
