@@ -24,8 +24,20 @@ class Demand {
     // Statistics
     // TO-DO: Adicionar estatísticas
   public:
+    
+    // Constructor
     Demand(int id, double timestamp, Vector2D origin,
         Vector2D destination, Ride* ride, int state);
+    
+    // Getters and Setters
+    int getID() const;
+    double getTimestamp() const;
+    Vector2D getOrigin() const;
+    Vector2D getDestination() const;
+    Ride* getRide() const;
+    int getState() const;
+    void setRide(Ride* ride);
+    void setState(int state);
 };
 
 

@@ -18,7 +18,7 @@ Ride::Ride(Vector<Demand*> demands) : demands(demands),duration(0.0),
   // Drop Off
   for (int i = 0; i < numDemands; i++) {
     Demand* demand = demands.getAt(i);
-    this->stops.append(new Stop(demand->getDestination(), STOP_DROPOFF, d));
+    this->stops.append(new Stop(demand->getDestination(), STOP_DROPOFF, demand));
   }
 
   // Creating segments

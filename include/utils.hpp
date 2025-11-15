@@ -8,8 +8,8 @@ class SimulationParameters {
     static int capacity;
     static double velocity;
     static double interval;
-    static double distanceOrigin;
-    static double distanceDestination;
+    static double maxDistanceOrigin;
+    static double maxDistanceDestination;
     static double eficiency;
     
     // Initialization
@@ -25,7 +25,7 @@ class Vector2D {
 
     // Constructors
     Vector2D();
-    Vector2D(int x, int y);
+    Vector2D(double x, double y);
 
     // Operations
     Vector2D operator+(const Vector2D& other) const;

@@ -1,9 +1,7 @@
-#include <iostream>
 #include <utils.hpp>
 
 int main() {
-  SimulationParameters parameters;
-  parameters.getSimulationParameters();
-  parameters.printParameters();
+  SimulationParameters::getSimulationParameters();
+  SimulationParameters::printParameters();
   return 0;
 }
