@@ -1,16 +1,21 @@
+# Compiler
 CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra -Iinclude -g
 
+# Folders
 SRC = src
 OBJ = obj
 BIN = bin
 TARGET = $(BIN)/tp2.out 
 
+# Files
 SRC_FILES = $(wildcard $(SRC)/*.cpp)
 OBJ_FILES = $(patsubst $(SRC)/%.cpp,$(OBJ)/%.o,$(SRC_FILES))
 
+# Commands
 .PHONY: all clean
 
+# Execution
 all: $(BIN) $(OBJ) $(TARGET)
 
 $(BIN):
